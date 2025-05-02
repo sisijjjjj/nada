@@ -1,0 +1,12 @@
+<div class="success-container" *ngIf="!isLoading">
+  <h2>🎉 Payment Successful!</h2>
+  <p>Thank you for your payment.</p>
+
+  
+  <a routerLink="/" class="btn btn-primary mt-4">🏠 Return Home</a>
+</div>
+
+<!-- Loading case -->
+<div *ngIf="isLoading">
+  <p>Loading payment information...</p>
+</div>

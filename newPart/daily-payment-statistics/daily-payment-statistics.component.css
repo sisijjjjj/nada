@@ -1,0 +1,142 @@
+/* Conteneur principal */
+.container {
+  margin-top: 30px;
+  background-color: #f8f0f6; /* Rose clair pour l'arrière-plan */
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombre douce */
+}
+
+/* Titre */
+h1 {
+  text-align: center;
+  color: #d5006f; /* Rose foncé pour le titre */
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Table responsive */
+.table-responsive {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+/* Style de la table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff; /* Fond blanc pour contraster */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Ombre douce pour l'effet de légèreté */
+}
+
+/* Entêtes de la table */
+.table th {
+  background-color: #ffccf2; /* Rose très clair pour les entêtes */
+  color: #9c1b47; /* Rose foncé pour le texte */
+  font-weight: bold;
+  text-align: center;
+  padding: 12px 15px;
+  border-top-left-radius: 8px; /* Coins arrondis */
+  border-top-right-radius: 8px; /* Coins arrondis */
+}
+
+/* Cellules de la table */
+.table td {
+  text-align: center;
+  padding: 10px 15px;
+  border: 1px solid #ddd; /* Bordure grise subtile */
+  color: #424242; /* Couleur sombre pour le texte */
+}
+
+/* Effet hover pour chaque ligne */
+.table tbody tr:hover {
+  background-color: #f5f5f5; /* Fond légèrement gris sur hover */
+  transition: background-color 0.3s ease; /* Transition fluide */
+}
+
+/* Mise en valeur des montants */
+.currency {
+  color: #d5006f; /* Rose foncé pour les montants */
+  font-weight: bold;
+}
+
+/* Icones devant chaque attribut */
+.table th i, .table td i {
+  font-size: 1.2rem;
+  margin-right: 8px;
+  color: #9c1b47; /* Icône en rose foncé */
+}
+
+/* Pour les petites tailles d'écran (mobile), ajustement du texte */
+@media (max-width: 768px) {
+  .table th, .table td {
+    padding: 8px 10px; /* Moins de padding pour les petits écrans */
+  }
+  h1 {
+    font-size: 1.5rem; /* Réduction de la taille du titre */
+  }
+}
+
+/* Table avec une bordure plus subtile et responsive */
+.table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+/* Dynamique sur les colonnes pour rendre l'affichage fluide */
+.table-responsive th, .table-responsive td {
+  white-space: nowrap;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+}
+table th {
+  font-size: 18px;
+}
+
+table th i {
+  margin-right: 8px;  /* Espacement entre l'icône et le texte */
+  font-size: 20px;    /* Taille de l'icône */
+  color: #8c4b97;     /* Une couleur violette pour les icônes */
+}
+/* Style des boutons */
+button {
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+button.btn-sm {
+  font-size: 12px;
+}
+
+button.btn-warning {
+  background-color: #ffc107;
+  color: white;
+}
+
+button.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Hover effects */
+button:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+.chart-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.currency {
+  font-weight: bold;
+  color: #198754;
+}

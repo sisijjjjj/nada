@@ -1,0 +1,184 @@
+/* TABLE + TEXTE */
+.table {
+  font-family: 'Poppins', 'Nunito', sans-serif;
+  font-size: 0.95rem;
+}
+
+.table th, .table td {
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.table th {
+  font-weight: 600;
+  color: #5d5a88; /* Gris-violet élégant */
+  text-transform: capitalize;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* TITRE DU CARD */
+.card-header h6 {
+  font-family: 'Poppins', 'Nunito', sans-serif;
+  font-weight: 700;
+  color: #5d5a88; /* même couleur que les titres de colonnes */
+}
+
+/* BOUTONS STYLE FEMININ + PROFESSIONNEL */
+.btn-professional-approve {
+  background-color: #e2a9b8; /* Rose gold doux */
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-professional-approve:hover {
+  background-color: #d48ca1; /* Un peu plus foncé au hover */
+}
+
+.btn-professional-pdf {
+  background-color: #a58fd3; /* Violet professionnel */
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-professional-pdf:hover {
+  background-color: #8d77c4; /* Violet hover */
+}
+
+/* HOVER SUR LIGNES DU TABLEAU */
+.table tbody tr:hover {
+  background-color: #f8e6ec; /* Léger rose pastel au hover */
+}
+/* BOUTONS CLASSIQUES, SOBRES */
+.btn-professional-approve, .btn-professional-pdf {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  color: #5d5a88; /* violet/gris élégant pour rester féminin */
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 12px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-professional-approve:hover, .btn-professional-pdf:hover {
+  background-color: #f8e6ec; /* léger rose en hover */
+  border-color: #e2a9b8; /* rose gold doux */
+  color: #5d5a88;
+}
+.table td, .table th {
+  padding: 0.4rem 0.5rem; /* réduit le padding vertical ET horizontal */
+  font-size: 0.9rem; /* texte un peu plus petit mais lisible */
+}
+
+.table {
+  margin-bottom: 1rem; /* moins de marge sous la table */
+}
+
+.table thead th {
+  font-weight: 700;
+  color: #5d5a88; /* joli violet/gris féminin professionnel */
+}
+
+.table tbody tr:hover {
+  background-color: #f8e6ec; /* hover rosé léger, on garde */
+}
+.btn-approve {
+  background-color: #6a0dad; /* Violet */
+  color: white; /* Texte en blanc */
+  border: none; /* Enlever la bordure */
+}
+
+.btn-approve:hover {
+  background-color: #9b30b0; /* Violet plus clair au survol */
+  color: white; /* Reste du texte en blanc */
+}
+/* BOUTON APPROVE STYLE PROFESSIONNEL */
+.btn-approve {
+  background-color: #7e57c2; /* Violet classique, élégant et professionnel */
+  color: white; /* Texte en blanc pour un bon contraste */
+  border: none; /* Pas de bordure */
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px; /* Bord légèrement arrondi pour un effet plus sobre */
+  transition: background-color 0.3s ease;
+}
+
+.btn-approve:hover {
+  background-color: #5e35b1; /* Violet légèrement plus foncé au survol, subtil mais visible */
+  color: white; /* Le texte reste blanc au survol */
+}
+/* BOUTON APPROVE */
+.btn-approve {
+  background-color: transparent; /* Fond transparent pour un look plus sobre */
+  border: 1px solid #4e4e4e; /* Bordure gris foncé */
+  color: #4e4e4e; /* Texte gris foncé pour un look professionnel */
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-approve:hover {
+  background-color: #f1f1f1; /* Légère couleur de fond au survol */
+  border-color: #2d2d2d; /* Bordure plus foncée au survol */
+  color: #2d2d2d; /* Texte plus foncé au survol */
+}
+
+/* BOUTON SAVE PDF */
+.btn-professional-pdf {
+  background-color: transparent; /* Fond transparent pour un look plus sobre */
+  border: 1px solid #4e4e4e; /* Bordure gris foncé */
+  color: #4e4e4e; /* Texte gris foncé pour un look professionnel */
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-professional-pdf:hover {
+  background-color: #f1f1f1; /* Légère couleur de fond au survol */
+  border-color: #2d2d2d; /* Bordure plus foncée au survol */
+  color: #2d2d2d; /* Texte plus foncé au survol */
+}
+/* Style de la première ligne (attributs de la table) */
+.table th {
+  font-weight: 600; /* Garde le texte en gras pour plus de clarté */
+  text-align: center; /* Centrer les titres */
+  color: #fff; /* Texte blanc pour un bon contraste */
+  background-color: #f8c8d8; /* Fond rose doux */
+  border: 1px solid #f1a7b7; /* Bordure rose clair pour un look élégant */
+  padding: 10px; /* Espacement confortable */
+  font-size: 0.9rem; /* Taille de police légèrement plus petite */
+  border-radius: 5px; /* Coins arrondis pour un effet plus doux */
+}
+
+/* Réduit la taille des en-têtes pour les rendre plus sobres */
+.table th, .table td {
+  padding: 8px; /* Espacement vertical et horizontal modéré */
+  font-size: 0.85rem; /* Plus petite taille de police */
+}
+
+/* Option de survol de la première ligne */
+.table thead tr:hover {
+  background-color: #f3a9c8; /* Rose plus vif au survol */
+}
+
+/* Ombre légère pour la première ligne pour la faire ressortir */
+.table thead {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre discrète */
+}
+.card-header h6 i {
+  margin-right: 8px; /* Espacement entre l'icône et le texte */
+  color: #e91e63; /* Une couleur rose pour l'icône */
+  font-size: 1.2rem; /* Taille légèrement plus grande pour l'icône */
+}
