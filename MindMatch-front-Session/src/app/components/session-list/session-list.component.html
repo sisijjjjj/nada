@@ -1,0 +1,348 @@
+<div class="session-manager" @fadeInOut>
+
+  <div class="notification" [class.show]="showNotification" [class.warning]="notificationType === 'warning'">
+    <span class="notification-icon">⚠️</span>
+    <span>{{ notificationMessage }}</span>
+    <span class="close-notification" (click)="hideNotification()">×</span>
+  </div>
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <h1 class="gradient-text">Session Management</h1>
+      <p class="subtitle">Manage your training sessions efficiently</p>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Search Box -->
+      <div class="search-box">
+        <input type="text" placeholder="Search sessions..." [(ngModel)]="searchQuery" 
+               (input)="searchSession()" class="search-input" />
+        <span class="search-icon">🔍</span>
+      </div>
+      
+      <!-- Add Button -->
+      <button class="add-button" (click)="openAddSessionModal()">
+        <span class="plus-icon">+</span> Add New Session
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab-navigation">
+    <button class="tab-button" [class.active]="activeTab === 'active'" (click)="switchTab('active')">
+      Active Sessions
+      <span class="badge">{{sessions.length}}</span>
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'archived'" (click)="switchTab('archived')">
+      Archived Sessions
+      <span class="badge">{{archivedSessions.length}}</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading sessions...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && ((activeTab === 'active' && sessions.length === 0) || (activeTab === 'archived' && archivedSessions.length === 0))" 
+       class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>No {{activeTab === 'active' ? 'active' : 'archived'}} sessions found</h3>
+    <p *ngIf="activeTab === 'active'">Click the "Add New Session" button to create one</p>
+    <button *ngIf="activeTab === 'archived'" class="add-button" (click)="switchTab('active')">
+      View Active Sessions
+    </button>
+  </div>
+
+  <!-- Session Table -->
+  <div *ngIf="!isLoading && ((activeTab === 'active' && sessions.length > 0) || (activeTab === 'archived' && archivedSessions.length > 0))" 
+       class="table-container">
+    <div class="table-scroll-controls">
+      <button class="scroll-button left" (click)="scrollTable('left')">
+        ❮
+      </button>
+      
+      <div class="table-wrapper" #scrollContainer>
+        <div class="session-table">
+          <!-- Table Header -->
+          <div class="table-header">
+            <div class="col-name">Session</div>
+            <div class="col-speaker">Speaker</div>
+            <div class="col-date">Date</div>
+            <div class="col-location">Location</div>
+            <div class="col-status">Status</div>
+            <div class="col-actions">Live</div>
+            <div class="col-actions">Actions</div>
+          </div>
+
+          <!-- Table Body -->
+          <div class="table-body">
+            <div *ngFor="let session of (activeTab === 'active' ? sessions : archivedSessions)" 
+                 class="table-row" @slideInOut>
+              <!-- Session Name and Description -->
+              <div class="col-name">
+                <div class="session-title">{{ session.nom }}</div>
+                <div class="session-description">{{ session.description | slice:0:100 }}{{ session.description.length > 100 ? '...' : '' }}</div>
+              </div>
+              
+              <!-- Speaker Info -->
+              <div class="col-speaker">
+                <div class="speaker-name">👤 {{ session.speakerName }}</div>
+                <div class="speaker-email">✉️ {{ session.speakerEmail }}</div>
+              </div>
+              
+              <!-- Date Info -->
+              <div class="col-date">
+                <div class="date-field">
+                  <span class="date-label">📅 Date:</span>
+                  {{ session.date | date: 'mediumDate' }}
+                </div>
+                <div class="date-field">
+                  <span class="date-label">⏳ Expires:</span>
+                  {{ session.expirationDate | date: 'mediumDate' }}
+                </div>
+              </div>
+              
+              <!-- Location Info -->
+              <div class="col-location">
+                <div class="location-coords">📍 {{ session.location || 'N/A' }}</div>
+                <div class="mini-map" *ngIf="session.location && session.location !== 'N/A'"
+                     [style.backgroundImage]="'url(' + getMapPreview(session.location) + ')'"
+                     (click)="showLocationOnMap(session.location)">
+                  <div class="map-overlay" *ngIf="!getMapPreview(session.location)">
+                    Map unavailable
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Status -->
+              <div class="col-status">
+                <div class="status-badge" [class.archived]="session.archived">
+                  {{ session.archived ? '📦 Archived' : '✅ Active' }}
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="modal-actions">
+                <button class="btn-join-large" (click)="startVideoConference(session, $event)">
+                  <span class="join-icon">🎥</span> Join session
+                </button>
+              </div>
+              
+              <!-- Actions -->
+              <div class="col-actions">
+                <div class="action-buttons">
+                  <button class="action-btn edit" (click)="openEditSessionModal(session)" 
+                          title="Edit session" *ngIf="!session.archived">
+                    ✏️
+                  </button>
+                  
+                  <button class="action-btn archive" (click)="session.archived ? unarchiveSession(session.id) : archiveSession(session.id)" 
+                          [title]="session.archived ? 'Unarchive session' : 'Archive session'">
+                    {{ session.archived ? '📂' : '📦' }}
+                  </button>
+                  
+                  <button class="action-btn delete" (click)="deleteSession(session.id)" title="Delete session">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="scroll-button right" (click)="scrollTable('right')">
+        ❯
+      </button>
+    </div>
+  </div>
+
+  <!-- Add/Edit Session Modal -->
+  <div class="modal-backdrop" *ngIf="showAddModal" @fadeInOut>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ currentSessionId ? 'Edit Session' : 'Create New Session' }}</h2>
+        <button (click)="closeModal()" class="close-btn">
+          ✕
+        </button>
+      </div>
+
+      <form [formGroup]="sessionForm" (ngSubmit)="addSession()" class="session-form">
+        <div class="form-columns">
+          <!-- Left Column -->
+          <div class="form-column">
+            <div class="form-group">
+              <label for="nom">Session Name *</label>
+              <input type="text" id="nom" formControlName="nom" 
+                     [class.invalid]="sessionForm.get('nom')?.invalid && sessionForm.get('nom')?.touched" />
+              <div class="validation-error" *ngIf="sessionForm.get('nom')?.invalid && sessionForm.get('nom')?.touched">
+                Session name is required (min 3 characters)
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea id="description" formControlName="description" rows="3"></textarea>
+              <div class="char-counter">
+                {{ sessionForm.get('description')?.value?.length || 0 }}/500
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="date">Date *</label>
+              <input type="date" id="date" formControlName="date" 
+                     [class.invalid]="sessionForm.get('date')?.invalid && sessionForm.get('date')?.touched" />
+              <div class="validation-error" *ngIf="sessionForm.get('date')?.invalid && sessionForm.get('date')?.touched">
+                Date is required
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="expirationDate">Expiration Date *</label>
+              <input type="date" id="expirationDate" formControlName="expirationDate" 
+                     [class.invalid]="sessionForm.get('expirationDate')?.invalid && sessionForm.get('expirationDate')?.touched" />
+              <div class="validation-error" *ngIf="sessionForm.get('expirationDate')?.invalid && sessionForm.get('expirationDate')?.touched">
+                Expiration date is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="form-column">
+            <div class="form-group">
+              <label for="speakerName">Speaker Name *</label>
+              <input type="text" id="speakerName" formControlName="speakerName" 
+                     [class.invalid]="sessionForm.get('speakerName')?.invalid && sessionForm.get('speakerName')?.touched" />
+              <div class="validation-error" *ngIf="sessionForm.get('speakerName')?.invalid && sessionForm.get('speakerName')?.touched">
+                Speaker name is required
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="speakerEmail">Speaker Email *</label>
+              <input type="email" id="speakerEmail" formControlName="speakerEmail" 
+                     [class.invalid]="sessionForm.get('speakerEmail')?.invalid && sessionForm.get('speakerEmail')?.touched" />
+              <div class="validation-error" *ngIf="sessionForm.get('speakerEmail')?.invalid && sessionForm.get('speakerEmail')?.touched">
+                Valid email is required
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="salle">Room *</label>
+              <input type="text" id="salle" formControlName="salle" 
+                     [class.invalid]="sessionForm.get('salle')?.invalid && sessionForm.get('salle')?.touched" />
+              <div class="validation-error" *ngIf="sessionForm.get('salle')?.invalid && sessionForm.get('salle')?.touched">
+                Room is required
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="niveau">Level *</label>
+              <input type="text" id="niveau" formControlName="niveau" 
+                     [class.invalid]="sessionForm.get('niveau')?.invalid && sessionForm.get('niveau')?.touched" />
+              <div class="validation-error" *ngIf="sessionForm.get('niveau')?.invalid && sessionForm.get('niveau')?.touched">
+                Level is required
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="prix">Price *</label>
+              <input type="number" id="prix" formControlName="prix" min="0" step="0.01" 
+                     [class.invalid]="sessionForm.get('prix')?.invalid && sessionForm.get('prix')?.touched" />
+              <div class="validation-error" *ngIf="sessionForm.get('prix')?.invalid && sessionForm.get('prix')?.touched">
+                Valid price is required
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="form-group">
+          <label for="location">Location (click on map to select) *</label>
+          <div class="location-input-group">
+            <input type="text" id="location" formControlName="location" readonly 
+                   [class.invalid]="sessionForm.get('location')?.invalid && sessionForm.get('location')?.touched" />
+            <button type="button" class="map-button" (click)="openMapModal()">
+              📍 Select on Map
+            </button>
+          </div>
+          <div class="validation-error" *ngIf="sessionForm.get('location')?.invalid && sessionForm.get('location')?.touched">
+            Location is required
+          </div>
+        </div>
+
+        <div id="map-container">
+          <div id="map"></div>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="form-group">
+          <label for="profilePicture">Session Image</label>
+          <div class="file-upload">
+            <label for="profilePicture" class="upload-label">
+              <span *ngIf="!selectedProfileFile">Choose an image...</span>
+              <span *ngIf="selectedProfileFile">{{ selectedProfileFile.name }}</span>
+              <span class="upload-button">📁 Browse</span>
+            </label>
+            <input type="file" id="profilePicture" (change)="fileChange($event)" accept="image/*" />
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="cancel-button" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="submit-button" [disabled]="sessionForm.invalid">
+            {{ currentSessionId ? 'Update Session' : 'Create Session' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Map Modal -->
+  <div class="modal-backdrop" *ngIf="showMapModal" @fadeInOut>
+    <div class="map-modal">
+      <div class="map-modal-header">
+        <h3>Select Location</h3>
+        <button (click)="closeMapModal()" class="close-btn">
+          ✕
+        </button>
+      </div>
+      
+      <div id="large-map-container">
+        <div id="large-map"></div>
+      </div>
+      
+      <div class="map-modal-footer">
+        <button (click)="confirmLocation()" class="confirm-btn">
+          Confirm Location
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jitsi Meeting Modal -->
+<div class="modal-backdrop" *ngIf="showJitsiModal" @fadeInOut>
+  <div class="meeting-modal">
+    <div class="meeting-modal-header">
+      <h3>Session Meeting</h3>
+      <button (click)="closeJitsiModal()" class="close-btn">
+        ✕
+      </button>
+    </div>
+    
+    <div id="jitsi-container" #jitsiContainer></div>
+    
+    <div class="meeting-modal-footer">
+      <button (click)="closeJitsiModal()" class="confirm-btn">
+        Close Meeting
+      </button>
+    </div>
+  </div>
+</div>
+
+</div>

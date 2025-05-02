@@ -1,0 +1,55 @@
+/* Style du bouton de déconnexion */
+.logout-item {
+  margin-left: auto; /* Alignement à droite */
+  transition: all 0.3s ease;
+  background-color: white; /* Fond blanc */
+  border-radius: 4px; /* Coins arrondis */
+  margin-left: 15px; /* Espacement depuis les autres éléments */
+}
+
+.logout-link {
+  color: #2c3e50; /* Texte foncé pour contraste */
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.logout-link:hover {
+  color: #f82249; /* Couleur d'accentuation au survol */
+  background-color: rgba(255, 255, 255, 0.9); /* Léger assombrissement au survol */
+}
+
+.logout-link i {
+  margin-right: 8px;
+  font-size: 16px;
+  color: #2c3e50; /* Icône foncée */
+}
+
+/* Version mobile */
+@media (max-width: 768px) {
+  .logout-item {
+    margin-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0;
+    background-color: transparent; /* Fond transparent en mobile */
+    border-radius: 0;
+  }
+  
+  .logout-link {
+    justify-content: center;
+    padding: 12px 20px;
+    color: white; /* Texte blanc en mobile */
+  }
+
+  .logout-link:hover {
+    color: #f82249;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .logout-link i {
+    color: white; /* Icône blanche en mobile */
+  }
+}

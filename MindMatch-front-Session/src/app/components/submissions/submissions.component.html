@@ -1,0 +1,128 @@
+<div class="submission-container">
+    <h2>📊 Tableau de Bord des Soumissions</h2>
+
+    <!-- Bouton pour afficher les statistiques -->
+    <button (click)="toggleStatisticsVisibility()" class="statistics-button">
+        {{ statisticsVisible ? 'Cacher le Tableau de Bord' : 'Afficher le Tableau de Bord' }}
+    </button>
+
+    <!-- Section des statistiques avancées -->
+    <div *ngIf="statisticsVisible" class="dashboard-container">
+        <div class="statistics-grid">
+            <!-- Cartes de statistiques -->
+            <div class="statistics-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users fa-3x"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Utilisateurs</h3>
+                    <div class="stat-value">{{ statistics.totalUsers }}</div>
+                    <div class="stat-change">+5% vs mois dernier</div>
+                </div>
+            </div>
+
+            <div class="statistics-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-alt fa-3x"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Sessions</h3>
+                    <div class="stat-value">{{ statistics.totalSessions }}</div>
+                    <div class="stat-change">+12% vs mois dernier</div>
+                </div>
+            </div>
+
+            <div class="statistics-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-alt fa-3x"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Soumissions</h3>
+                    <div class="stat-value">{{ statistics.totalSubmissions }}</div>
+                    <div class="stat-change">+8% vs mois dernier</div>
+                </div>
+            </div>
+
+            <div class="statistics-card">
+                <div class="stat-icon">
+                    <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Documents</h3>
+                    <div class="stat-value">{{ statistics.totalDocumentsUploaded }}</div>
+                    <div class="stat-change">+15% vs mois dernier</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>Statistiques Globales</h3>
+                <div class="chart-wrapper">
+                    <canvas baseChart 
+                        [data]="barChartData" 
+                        [options]="barChartOptions" 
+                        [type]="barChartType">
+                    </canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Répartition des Statuts</h3>
+                <div class="chart-wrapper">
+                    <canvas baseChart 
+                        [data]="pieChartData" 
+                        [options]="pieChartOptions" 
+                        [type]="pieChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des soumissions -->
+    <h3 class="submissions-title">📄 Liste des Soumissions</h3>
+    
+    <table class="submissions-table">
+        <thead>
+            <tr>
+                <th>👤 Utilisateur</th>
+                <th>📆 Date</th>
+                <th>📁 Document</th>
+                <th>📚 Session</th>
+                <th>⚙️ Statut</th>
+                <th>🛠 Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let submission of submissions" [class]="getStatusColor(submission.status)">
+                <td>{{ submission.user?.email || 'Email non disponible' }}</td>
+                <td>{{ submission.submissionDate | date: 'short' }}</td>
+                <td>
+                    <div *ngFor="let path of submission.documentPaths" class="document-container">
+                        <span class="filename">{{ getFileName(path) }}</span>
+                        <div class="document-actions">
+
+                            <button (click)="downloadDocument(path)" class="download-link">
+                                <i class="fas fa-download"></i> Télécharger
+                            </button>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ (submission.session && submission.session.nom) ? submission.session.nom : 'Session non disponible' }}</td>
+                <td>{{ submission.status }}</td>
+                <td class="action-buttons">
+                    <button (click)="updateStatus(submission.id!, submissionStatus.ACCEPTED)" 
+                            matTooltip="Accepter" matTooltipPosition="above">
+                        <i class="fas fa-check-circle success-icon"></i>
+                    </button>
+                    <button (click)="updateStatus(submission.id!, submissionStatus.REJECTED)" 
+                            matTooltip="Rejeter" matTooltipPosition="above">
+                        <i class="fas fa-times-circle danger-icon"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

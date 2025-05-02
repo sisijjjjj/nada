@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Management</title>
+    <link href="/assets/BackOffice/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="/assets/BackOffice/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <app-sidebar-back></app-sidebar-back>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <app-navebar-back></app-navebar-back>
+                <div class="container-fluid">
+                    <router-outlet></router-outlet>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Payments Management</h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- Search Bar -->
+                            <div class="d-flex justify-content-end mb-3">
+                                <input type="text" class="form-control w-25" placeholder="Search..." [(ngModel)]="searchQuery" (input)="filterPayments()">
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th># <i class="fas fa-hashtag"></i></th>
+                                            <th>Participant <i class="fas fa-user"></i></th>
+                                            <th>Amount <i class="fas fa-dollar-sign"></i></th>
+                                            <th>Sessions <i class="fas fa-calendar-day"></i></th>
+                                            <th>Status <i class="fas fa-clipboard-check"></i></th>
+                                            <th>Created At <i class="fas fa-calendar-alt"></i></th>
+                                            <th>Phone <i class="fas fa-phone"></i></th>
+                                            <th>Payment Method <i class="fas fa-credit-card"></i></th>
+                                            <th>Actions <i class="fas fa-cogs"></i></th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        <tr *ngIf="isLoading">
+                                            <td colspan="9" class="text-center">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngFor="let payment of filteredPayments; let index = index">
+                                            <td>{{ index + 1 }}</td>
+                                            <td>{{ payment.userFirstName + " " + payment.userLastName }}</td>
+                                            <td>{{ payment.amount }}</td>
+                                            <td>{{ payment.titles }}</td>
+                                            <td>
+                                                <span
+                                                    [ngClass]="payment.status === PaymentStatus.COMPLETED ? 'badge badge-success' :
+                                                               payment.status === PaymentStatus.CANCELLED ? 'badge badge-danger' : 'badge badge-info'">
+                                                    {{ payment.status }}
+                                                </span>
+                                            </td>
+                                            <td>{{ payment.createdAt | date:'short' }}</td>
+                                            <td>{{ payment.userPhone }}</td>
+                                            <td>{{ payment.method }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group" aria-label="Payment Actions">
+                                                    <button *ngIf="payment.status === PaymentStatus.PENDING"
+                                                     class="btn btn-approve btn-sm"
+                                                    (click)="updatePaymentStatus(payment.id, PaymentStatus.COMPLETED)">
+                                                           <i class="fas fa-check"></i> Approve
+                                                    </button>
+
+                                                    <button class="btn btn-primary btn-sm"
+                                                        (click)="generatePaymentPDF(payment)">
+                                                        <i class="fas fa-save"></i> Save PDF
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="payments.length === 0 && !isLoading">
+                                            <td colspan="10" class="text-center">No payments found.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h6 class="m-0 font-weight-bold text-primary">Top 5 Users with the Highest Annual Payment Amounts</h6>
+                            <apx-chart *ngIf="!isChartLoading && amountChart.series.length > 0"
+                                [series]="amountChart.series" [chart]="amountChart.chart" [labels]="amountChart.labels"
+                                [responsive]="amountChart.responsive">
+                            </apx-chart>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/BackOffice/vendor/jquery/jquery.min.js"></script>
+    <script src="/assets/BackOffice/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/BackOffice/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/assets/BackOffice/js/sb-admin-2.min.js"></script>
+    <script src="/assets/BackOffice/vendor/chart.js/Chart.min.js"></script>
+    <script src="/assets/BackOffice/js/demo/chart-area-demo.js"></script>
+    <script src="/assets/BackOffice/js/demo/chart-pie-demo.js"></script>
+</body>
+
+</html>

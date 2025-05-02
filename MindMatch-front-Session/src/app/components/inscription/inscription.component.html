@@ -1,0 +1,154 @@
+<div class="popup-container">
+    <div *ngIf="popupMessage" class="popup-alert" [class.success]="popupType === 'success'" [class.error]="popupType === 'error'">
+      <p>{{ popupMessage }}</p>
+    </div>
+    <div class="popup-content">
+      <div class="popup-left">
+        <h2>MatchMind</h2>
+        <p>Rejoignez notre communauté professionnelle</p>
+        <div class="benefits">
+          <div class="benefit-item">
+            <i class="icon">✓</i>
+            <span>Réseau professionnel</span>
+          </div>
+          <div class="benefit-item">
+            <i class="icon">✓</i>
+            <span>Opportunités uniques</span>
+          </div>
+          <div class="benefit-item">
+            <i class="icon">✓</i>
+            <span>Gestion simplifiée</span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="popup-right">
+        <form [formGroup]="registerFormTunisie" (ngSubmit)="onSubmit()">
+          <h2 class="form-title">Créer un compte</h2>
+  
+          <!-- Champ Nom -->
+          <div class="form-group">
+            <label for="firstName">Nom</label>
+            <input type="text" id="firstName" formControlName="firstName" placeholder="Entrez votre nom"
+              (focus)="showHint('firstName')" (blur)="hideHint()" [ngClass]="{'is-invalid': isFieldInvalid('firstName'), 'is-valid': registerFormTunisie.get('firstName')?.valid}">
+            <div *ngIf="isFieldInvalid('firstName')" class="invalid-feedback">
+              {{ registerFormTunisie.get('firstName')?.errors?.['required'] ? 'Le nom est obligatoire.' : 'Minimum 2 caractères' }}
+            </div>
+          </div>
+  
+          <!-- Champ Prénom -->
+          <div class="form-group">
+            <label for="lastName">Prénom</label>
+            <input type="text" id="lastName" formControlName="lastName" placeholder="Entrez votre prénom"
+              (focus)="showHint('lastName')" (blur)="hideHint()" [ngClass]="{'is-invalid': isFieldInvalid('lastName'), 'is-valid': registerFormTunisie.get('lastName')?.valid}">
+            <div *ngIf="isFieldInvalid('lastName')" class="invalid-feedback">
+              {{ registerFormTunisie.get('lastName')?.errors?.['required'] ? 'Le prénom est obligatoire.' : 'Minimum 2 caractères' }}
+            </div>
+          </div>
+
+          <!-- Champ Addresse -->
+          <div class="form-group">
+            <label for="address">Addresse</label>
+            <input type="text" id="address" formControlName="address" placeholder="Entrez votre addresse"
+              (focus)="showHint('Adress')" (blur)="hideHint()" [ngClass]="{'is-invalid': isFieldInvalid('address'), 'address': registerFormTunisie.get('address')?.valid}">
+            <div *ngIf="isFieldInvalid('address')" class="invalid-feedback">
+              {{ registerFormTunisie.get('address')?.errors?.['required'] }}
+            </div>
+          </div> 
+  
+          <!-- Champ Email -->
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" formControlName="email" placeholder="Entrez votre email"
+              (focus)="showHint('email')" (blur)="hideHint()" [ngClass]="{'is-invalid': isFieldInvalid('email'), 'is-valid': registerFormTunisie.get('email')?.valid}">
+            <div *ngIf="isFieldInvalid('email')" class="invalid-feedback">
+              Veuillez entrer une adresse e-mail valide.
+            </div>
+            <div *ngIf="hintField === 'email'" class="hint-popup">
+              Format attendu : exemple&#64;domaine.com
+            </div>
+          </div>
+  
+          <!-- Champ Numéro de téléphone -->
+          <div class="form-group">
+            <label for="phone">Numéro de téléphone</label>
+            <div class="phone-input-container">
+              <span class="country-code">+216</span>
+              <input type="tel" id="phone" formControlName="phone" placeholder="XXXX XXXX" (keydown)="limitInputLength($event)"
+                (input)="onphoneInput()" (focus)="showHint('phone')" (blur)="hideHint()" [ngClass]="{'is-invalid': isFieldInvalid('phone'), 'is-valid': registerFormTunisie.get('phone')?.valid}">
+            </div>
+            <div *ngIf="isFieldInvalid('phone')" class="invalid-feedback">
+              Numéro de téléphone invalide (8 chiffres requis).
+            </div>
+          </div>
+  
+          <!-- Champ Rôle -->
+          <div class="form-group">
+            <label for="role">Rôle</label>
+            <select id="role" formControlName="role" [ngClass]="{'is-invalid': isFieldInvalid('role'), 'is-valid': registerFormTunisie.get('role')?.valid}"
+              class="form-select">
+              <option value="" disabled selected>Sélectionnez votre rôle</option>
+              <option *ngFor="let role of roles" [value]="role">{{ roleLabels[role] }}</option>
+            </select>
+            <div *ngIf="isFieldInvalid('role')" class="invalid-feedback">
+              Veuillez sélectionner un rôle.
+            </div>
+          </div>
+
+          <!-- Champ Sexe -->
+          <div class="form-group">
+            <label for="sexe">Sexe</label>
+            <input type="text" id="sexe" formControlName="sexe" placeholder="Entrez votre Sexe (Homme, Femme)"
+              (focus)="showHint('sexe')" (blur)="hideHint()" [ngClass]="{'is-invalid': isFieldInvalid('sexe'), 'sexe': registerFormTunisie.get('sexe')?.valid}">
+            <div *ngIf="isFieldInvalid('sexe')" class="invalid-feedback">
+              {{ registerFormTunisie.get('sexe')?.errors?.['required'] }}
+            </div>
+          </div> 
+  
+          <!-- Champ Mot de passe -->
+          <div class="form-group password-container">
+            <label for="password">Mot de passe</label>
+            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" placeholder="Entrez votre mot de passe"
+              (focus)="showHint('password')" (blur)="hideHint()" [ngClass]="{'is-invalid': isFieldInvalid('password'), 'is-valid': registerFormTunisie.get('password')?.valid}">
+            <button type="button" (click)="togglePasswordVisibility()" class="toggle-password">
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+            <div *ngIf="isFieldInvalid('password')" class="invalid-feedback">
+              Le mot de passe doit contenir au moins 6 caractères dont une lettre et un chiffre.
+            </div>
+            <div *ngIf="passwordStrength > 0" class="password-strength">
+              <div class="strength-bar" [style.width.%]="passwordStrength * 20" [class.weak]="passwordStrength <= 2"
+                [class.medium]="passwordStrength === 3" [class.strong]="passwordStrength >= 4"></div>
+              <span class="strength-text">
+                {{ passwordStrength <= 2 ? 'Faible' : passwordStrength === 3 ? 'Moyen' : 'Fort' }}
+              </span>
+            </div>
+          </div>
+  
+          <!-- Champ Confirmation du mot de passe -->
+          <div class="form-group password-container">
+            <label for="confirmPassword">Confirmer le mot de passe</label>
+            <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" formControlName="confirmPassword"
+              placeholder="Confirmez votre mot de passe" [ngClass]="{'is-invalid': isFieldInvalid('confirmPassword'), 'is-valid': registerFormTunisie.get('confirmPassword')?.valid}">
+            <button type="button" (click)="toggleConfirmPasswordVisibility()" class="toggle-password">
+              {{ showConfirmPassword ? '🙈' : '👁️' }}
+            </button>
+            <div *ngIf="isFieldInvalid('confirmPassword')" class="invalid-feedback">
+              Les mots de passe ne correspondent pas.
+            </div>
+          </div>
+  
+          <!-- Bouton d'inscription -->
+          <button type="submit" [disabled]="!registerFormTunisie.valid" class="btn-submit">
+            <span *ngIf="registerFormTunisie.valid">Créer un compte</span>
+            <span *ngIf="!registerFormTunisie.valid">Remplissez tous les champs</span>
+          </button>
+  
+          <div class="login-link">
+            Déjà membre ? <a routerLink="/login">Connectez-vous</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

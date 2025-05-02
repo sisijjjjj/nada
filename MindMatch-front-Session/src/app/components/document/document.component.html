@@ -1,0 +1,53 @@
+<div class="backdrop">
+    <div class="upload-modal">
+      <div class="upload-documents-container">
+        
+        <!-- Bouton pour fermer et naviguer -->
+        <button class="close-button" (click)="closePopupAndNavigate()">✖</button>
+  
+        <!-- CV -->
+        <div class="upload-section">
+          <h2>Importer votre <strong>CV</strong></h2>
+  
+          <div class="upload-box">
+            <div class="upload-content">
+              <i class="fas fa-file-pdf fa-2x text-purple"></i>
+  
+              <div class="file-select-area">
+                <!-- Aucune sélection -->
+                <ng-container *ngIf="diplomaFilesSelected.length === 0">
+                  <i class="fas fa-plus fa-3x cursor-pointer" (click)="diplomaInput.click()"></i>
+                  <p>
+                    Glissez-déposez un fichier ou 
+                    <a class="browse-link" (click)="diplomaInput.click()">Parcourir</a>
+                  </p>
+                </ng-container>
+  
+                <!-- Fichiers sélectionnés -->
+                <div *ngIf="diplomaFilesSelected.length > 0">
+                  <div class="file-preview" *ngFor="let file of diplomaFilesSelected; let i = index">
+                    <p>📄 {{i + 1}}. {{ file.name }}</p>
+                  </div>
+                  <button class="add-more-btn" (click)="diplomaInput.click()">+ Ajouter d'autres</button>
+                </div>
+  
+                <!-- Input caché -->
+                <input 
+                  type="file" 
+                  accept=".pdf, image/*" 
+                  multiple 
+                  style="display: none" 
+                  (change)="onFileSelected($event, 'diploma')" 
+                  #diplomaInput>
+              </div>
+  
+              <p class="format-info">Formats acceptés : PDF, JPG, PNG, JPEG, GIF, SVG</p>
+            </div>
+  
+            <button class="upload-button" (click)="submitDocuments()">📤 Enregistrer votre cv</button>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  </div>

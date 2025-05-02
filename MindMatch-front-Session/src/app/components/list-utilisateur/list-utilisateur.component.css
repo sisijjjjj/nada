@@ -1,0 +1,44 @@
+/* src/app/components/admin-user/admin-user.component.css */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  td {
+    background-color: #f9f9f9;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+  
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+  }
+  

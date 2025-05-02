@@ -1,0 +1,208 @@
+<div class="sessions-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <a routerLink="/home" class="back-button" aria-label="Retour à l'accueil">
+      <span class="back-icon">←</span> Retour
+    </a>
+
+    <div class="search-bar">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="searchSessions()" 
+        placeholder="Rechercher des sessions..." 
+        class="search-input" 
+        aria-label="Rechercher des sessions"
+      >
+      <span class="search-icon">🔍</span>
+    </div>
+  </div>
+
+  <!-- Sessions Grid -->
+  <div class="sessions-grid">
+    <div *ngFor="let session of filteredSessions" class="session-card" (click)="selectSession(session)">
+      <div class="card-image">
+        <img [src]="getProfilePictureUrl(session)" [alt]="session.nom">
+        <div class="image-overlay"></div>
+        <div *ngIf="session.room" class="session-level">{{ session.room }}</div>
+      </div>
+
+      <div class="card-content">
+        <div class="card-header">
+          <h3>{{ session.nom }}</h3>
+          <div class="speaker-info" *ngIf="session.speakerName">
+            <span class="speaker-name">👤 {{ session.speakerName }}</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <p>Description:
+            {{ (session.description || '').length > 100 
+              ? (session.description | slice:0:100) + '...' 
+              : session.description 
+            }}
+          </p>
+
+          <div class="meta-info">
+            <span class="date-info">
+              📅 {{ getFormattedDate(session.date)}}
+            </span>
+            <span *ngIf="session.location" class="location-info">
+              📍 Voir sur la carte
+            </span>
+          </div>
+<br> 
+
+
+          <div class="session-money" >
+            <p>Prix: {{ (session.prix)}} DT</p>
+        </div>
+
+        <!-- <div class="card-footer">
+          <div class="button-group">
+            <button class="btn-join" (click)="startVideoConference(session, $event)">
+              <span class="join-icon">🎥</span> Rejoindre
+            </button>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Session Details -->
+  <div *ngIf="selectedSession" class="modal-overlay" (click)="selectedSession = null">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ selectedSession.nom }}</h2>
+        <button class="close-button" (click)="selectedSession = null">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-img-container">
+          <img [src]="getProfilePictureUrl(selectedSession)" [alt]="selectedSession.nom" class="modal-img">
+          <div class="session-tags">
+            <span *ngIf="selectedSession.room" class="tag">{{ selectedSession.room }}</span>
+          </div>
+        </div>
+
+        <div class="session-description">
+          <h3>Description</h3>
+          <p>{{ selectedSession.description }}</p>
+        </div>
+
+        <div class="info-grid">
+          <div *ngIf="selectedSession.speakerName" class="info-item">
+            <span class="info-icon">👤</span>
+            <div>
+              <h4>Speaker</h4>
+              <p>{{ selectedSession.speakerName }}</p>
+              <p *ngIf="selectedSession.speakerEmail">✉️ {{ selectedSession.speakerEmail }}</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="info-icon">📅</span>
+            <div>
+              <h4>Date</h4>
+              <p>{{ getFormattedDate(selectedSession.date) }}</p>
+            </div>
+          </div>
+
+          <div *ngIf="selectedSession.location" class="info-item">
+            <span class="info-icon">📍</span>
+            <div>
+              <h4>Localisation</h4>
+              <!-- <div id="location-map-detail" style="height: 200px; width: 100%; border-radius: 8px;"></div> -->
+              <button class="btn-map" (click)="showLocationOnMap(selectedSession.location)">
+                Afficher sur la carte
+              </button>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="info-icon">ℹ️</span>
+            <div>
+              <h4>Détails supplémentaires</h4>
+              <p *ngIf="selectedSession.room">Salle : {{ selectedSession.room }}</p>
+              <p>Expire le : {{ getFormattedDate(selectedSession.expirationDate) }}</p>
+            </div>
+          </div>
+
+          <!-- Soumission de CV -->
+          <div class="info-item">
+            <span class="info-icon">📎</span>
+            <div>
+              <h4>Soumission du CV</h4>
+              <p>Pour accéder à la session, soumettez votre CV et soyez validé par l'organisateur.</p>
+              <label routerLink="/cv" for="cvUpload" class="btn-map" style="margin-top: 8px; display: inline-block; cursor: pointer;">
+                Soumettre votre CV
+              </label>
+              
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-join-large" (click)="startVideoConference(selectedSession, $event)">
+            <span class="join-icon">🎥</span> Rejoindre la session
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Jitsi Video Conference -->
+  <div *ngIf="showJitsiModal" class="modal-overlay" (click)="closeJitsiModal()">
+    <div class="jitsi-container" (click)="$event.stopPropagation()">
+      <app-jitsi-meet
+        [roomName]="selectedSession?.id?.toString() || 'default-room'"
+        [userName]="currentUserName"
+        (closeEvent)="closeJitsiModal()">
+      </app-jitsi-meet>
+    </div>
+  </div>
+
+  <!-- Modal: Map -->
+  <div *ngIf="showMapModal" class="modal-overlay" (click)="closeMapModal()">
+    <div class="map-modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Localisation de la session</h2>
+        <button class="close-button" (click)="closeMapModal()">✕</button>
+      </div>
+      <div id="location-map-modal" style="height: 70vh; width: 100%;"></div>
+    </div>
+  </div>
+
+  <br><br>
+
+  <!-- No Results Found -->
+  <div *ngIf="filteredSessions.length === 0" class="no-results">
+    <div class="no-results-icon">📭</div>
+    <p>Aucune session ne correspond à votre recherche</p>
+    <button class="reset-search" (click)="searchTerm = ''; searchSessions()">Réinitialiser la recherche</button>
+  </div>
+
+  <!-- Chatbot -->
+  <div class="chatbot-btn">
+    <button class="btn btn-primary rounded-circle shadow-lg p-3" (click)="toggleChatbot()">
+      <i class="bi bi-chat-dots-fill">Chat</i>
+    </button>
+  </div>
+
+  <div *ngIf="chatbotVisible" class="chatbot-box">
+    <div class="chatbot-header">
+      <h5>MatchMin Session's Assistant</h5>
+      <button class="btn-close btn-close-white" (click)="toggleChatbot()"></button>
+    </div>
+    <div class="chatbot-content">
+      <iframe
+        src="https://www.chatbase.co/chatbot-iframe/0eOLC7ad99e-O995fZUzH?hideChatBoatBranding=true"
+        width="100%"
+        height="100%"
+        frameBorder="0"
+        style="border: none;">
+      </iframe>
+    </div>
+  </div>
+</div>
